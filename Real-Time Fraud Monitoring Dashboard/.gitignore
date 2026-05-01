@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.joblib
+*.pkl
+*.log
+.env
+.venv/
+venv/
+.venv/
+reports/
+models/
+__pycache__/
+.DS_Store
