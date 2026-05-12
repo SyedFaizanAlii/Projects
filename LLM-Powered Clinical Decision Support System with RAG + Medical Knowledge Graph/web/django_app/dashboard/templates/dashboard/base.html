@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered Clinical Decision Support System using RAG and Medical Knowledge Graph for evidence-based clinical insights.">
+    <title>CDSS — Clinical Decision Support System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <div class="nav-logo">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="nav-title">
+                    <span class="nav-name">CDSS</span>
+                    <span class="nav-sub">Clinical Decision Support</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/" class="nav-link"><i class="fas fa-cog"></i> Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-wrap">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>CDSS &mdash; LLM-Powered Clinical AI</span>
+            </div>
+            <p class="footer-copy">RAG + Medical Knowledge Graph &bull; Powered by Cerebras &bull; &copy; 2026</p>
+            <p class="footer-disclaimer">For research purposes only. Not a substitute for professional medical advice.</p>
+        </div>
+    </footer>
+</body>
+</html>

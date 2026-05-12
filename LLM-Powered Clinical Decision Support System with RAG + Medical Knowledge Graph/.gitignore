@@ -49,7 +49,6 @@ db.sqlite3-journal
 
 # Project
 .env
-.env
 .env.local
 .env.*.local
 *.pem

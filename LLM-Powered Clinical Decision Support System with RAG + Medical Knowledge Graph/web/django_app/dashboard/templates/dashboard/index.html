@@ -1,0 +1,168 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-circle-dot pulse-dot"></i>
+            AI-Powered &bull; Evidence-Based &bull; Real-Time
+        </div>
+        <h1 class="hero-title">Clinical Decision Support<br><span class="hero-title-accent">Powered by Medical AI</span></h1>
+        <p class="hero-sub">Ask any clinical question and receive evidence-based insights grounded in peer-reviewed PubMed research — synthesized by LLM reasoning and a medical knowledge graph.</p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-num">6,970+</span>
+                <span class="stat-label">Indexed Documents</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">7</span>
+                <span class="stat-label">Medical Specialties</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">2,092</span>
+                <span class="stat-label">PubMed Papers</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">RAG</span>
+                <span class="stat-label">+ Knowledge Graph</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURE CARDS ===== -->
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg,#0ea5e9,#0284c7)">
+            <i class="fas fa-brain"></i>
+        </div>
+        <h3>Intelligent Reasoning</h3>
+        <p>Cerebras LLM synthesizes evidence from ChromaDB vector search and Neo4j knowledge graph into coherent clinical recommendations.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg,#10b981,#059669)">
+            <i class="fas fa-microscope"></i>
+        </div>
+        <h3>PubMed-Grounded</h3>
+        <p>Every answer is grounded in real PubMed research papers with DOI references, PMID links, and specialty classification.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg,#8b5cf6,#7c3aed)">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <h3>Evidence Confidence</h3>
+        <p>Semantic similarity scores from ChromaDB vector search are used to compute a real confidence level for each answer.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon" style="background: linear-gradient(135deg,#f59e0b,#d97706)">
+            <i class="fas fa-diagram-project"></i>
+        </div>
+        <h3>Knowledge Graph</h3>
+        <p>Drug-disease-symptom relationships from a medical knowledge graph enrich answers with structured entity connections.</p>
+    </div>
+</section>
+
+<!-- ===== QUERY FORM ===== -->
+<section class="query-section">
+    <div class="query-header">
+        <h2><i class="fas fa-stethoscope"></i> Clinical Query Interface</h2>
+        <p>Enter your clinical question below. The system will retrieve relevant medical evidence and synthesize a clinical recommendation.</p>
+    </div>
+    <form id="queryForm">
+        {% csrf_token %}
+        <div class="input-wrap">
+            <label for="queryInput" class="input-label">
+                <i class="fas fa-search"></i> Your Clinical Question
+            </label>
+            <textarea id="queryInput" name="query_text" rows="4"
+                placeholder="E.g., What are the drug interactions with metformin in elderly patients with type 2 diabetes?&#10;E.g., What are the best anticoagulation options for a patient with atrial fibrillation?"></textarea>
+            <div class="char-counter"><span id="charCount">0</span> / 500</div>
+        </div>
+
+        <div class="query-actions">
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <span class="btn-text"><i class="fas fa-paper-plane"></i> Submit Clinical Query</span>
+                <span class="btn-loading" style="display:none;"><i class="fas fa-circle-notch fa-spin"></i> Analyzing Evidence...</span>
+            </button>
+            <button type="button" id="clearBtn" class="btn-clear">
+                <i class="fas fa-rotate-left"></i> Clear
+            </button>
+        </div>
+
+        <!-- EXAMPLE QUERIES -->
+        <div class="example-queries">
+            <span class="example-label"><i class="fas fa-lightbulb"></i> Try:</span>
+            <button class="example-chip" type="button" data-q="What are the drug interactions with metformin?">Metformin interactions</button>
+            <button class="example-chip" type="button" data-q="What are the side effects of chemotherapy?">Chemo side effects</button>
+            <button class="example-chip" type="button" data-q="Treatment options for heart failure with reduced ejection fraction?">HFrEF treatment</button>
+            <button class="example-chip" type="button" data-q="What antibiotics are used for infectious endocarditis?">Endocarditis antibiotics</button>
+        </div>
+    </form>
+</section>
+
+<!-- ===== RESULTS SECTION ===== -->
+<section id="results" class="results-section" style="display:none;">
+
+    <!-- Header with confidence -->
+    <div class="results-header">
+        <div class="results-title">
+            <i class="fas fa-file-medical"></i>
+            <h2>Clinical Recommendation</h2>
+        </div>
+        <div id="confidenceBadge" class="confidence-badge">
+            <i class="fas fa-chart-line"></i>
+            Confidence: <strong id="confidenceScore">--</strong>
+        </div>
+    </div>
+
+    <!-- AI Answer -->
+    <div class="answer-card">
+        <div class="answer-label"><i class="fas fa-robot"></i> AI-Synthesized Response</div>
+        <div id="answerBox" class="answer-body"></div>
+    </div>
+
+    <!-- Confidence Meter -->
+    <div class="confidence-meter-wrap">
+        <div class="meter-header">
+            <span class="meter-label">Evidence Confidence</span>
+            <span id="confidenceHint" class="meter-hint"></span>
+        </div>
+        <div class="meter-track">
+            <div id="confidenceMeter" class="meter-fill"></div>
+        </div>
+        <div class="meter-ticks">
+            <span>Low</span><span>Moderate</span><span>High</span><span>Very High</span>
+        </div>
+    </div>
+
+    <!-- PubMed Sources -->
+    <div id="sourcesSection" class="sources-section">
+        <div class="sources-title-row">
+            <h3 class="sources-title"><i class="fas fa-book-medical"></i> PubMed Reference Sources</h3>
+            <span id="sourcesCount" class="sources-count"></span>
+        </div>
+        <p class="sources-desc">These peer-reviewed publications were retrieved from the indexed database and used to generate the clinical recommendation above.</p>
+        <div id="sourcesList" class="sources-grid"></div>
+    </div>
+
+</section>
+
+<!-- ===== ERROR BOX ===== -->
+<div id="errorBox" class="error-card" style="display:none;">
+    <i class="fas fa-triangle-exclamation"></i>
+    <div>
+        <strong>Query Failed</strong>
+        <p id="errorMsg"></p>
+    </div>
+    <button type="button" onclick="document.getElementById('errorBox').style.display='none'"><i class="fas fa-xmark"></i></button>
+</div>
+
+<script src="{% static 'dashboard/query.js' %}"></script>
+{% endblock %}

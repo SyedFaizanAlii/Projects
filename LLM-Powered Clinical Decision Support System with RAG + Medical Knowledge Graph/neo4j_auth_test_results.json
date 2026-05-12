@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "neo4j/neo4j",
+      "result": "FAILED",
+      "error": "{neo4j_code: Neo.ClientError.Security.Unauthorized} {message: The client is unauthorized due to authentication failure.} {gql_status: 42NFF} {gql_status_description: error: syntax error or access rule violation - permission/access denied. Access denied, see the security logs for details.}"
+    },
+    {
+      "name": "admin/neo4j",
+      "result": "FAILED",
+      "error": "{neo4j_code: Neo.ClientError.Security.Unauthorized} {message: The client is unauthorized due to authentication failure.} {gql_status: 42NFF} {gql_status_description: error: syntax error or access rule violation - permission/access denied. Access denied, see the security logs for details.}"
+    },
+    {
+      "name": "from .env",
+      "result": "FAILED",
+      "error": "{neo4j_code: Neo.ClientError.Security.Unauthorized} {message: The client is unauthorized due to authentication failure.} {gql_status: 42NFF} {gql_status_description: error: syntax error or access rule violation - permission/access denied. Access denied, see the security logs for details.}"
+    }
+  ]
+}
